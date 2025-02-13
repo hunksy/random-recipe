@@ -12,7 +12,7 @@ dp = Dispatcher()
 @dp.message(Command('start'))
 async def start(message: types.message):
     kb = [
-        [types.KeyboardButton(text='Открыть', web_app=WebAppInfo(url='https://google.com'))]
+        [types.KeyboardButton(text='Открыть', web_app=WebAppInfo(url='https://127.0.0.1:8080/'))]
     ]
     markup = types.ReplyKeyboardMarkup(keyboard=kb)
     await message.answer('Привет', reply_markup=markup)
