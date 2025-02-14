@@ -4,6 +4,7 @@ const express = require('express');
 const path = require('path');
 
 const app = express();
+app.use(express.static(path.join(__dirname, 'public')));
 
 const options = {
     key: fs.readFileSync('./localhost-key.pem'),
@@ -11,8 +12,7 @@ const options = {
 };
 
 app.get('/', (req, res) => {
-    console.log(path.join(__dirname+'/index.html'));
-    res.sendFile(path.join(__dirname+'/index.html'));
+    res.sendFile('index.html');
 });
 
 https.createServer(options, app).listen(8080);
