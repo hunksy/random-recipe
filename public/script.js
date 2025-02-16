@@ -33,6 +33,7 @@ document.querySelector(".getRec").addEventListener("click", async function () {
         document.querySelector(".recName").textContent = await translate(meal.strMeal);
         document.querySelector(".recCategory").textContent = await translate(meal.strCategory);
         document.querySelector(".recInstruction").textContent = await translate(meal.strInstructions);
+        document.querySelector(".addRec").setAttribute("data-recipe-id", meal.idMeal);
 
         const tableBody = document.querySelector(".recTableBody");
         tableBody.innerHTML = "";
@@ -51,5 +52,65 @@ document.querySelector(".getRec").addEventListener("click", async function () {
     } catch (error) {
         console.error("Ошибка при загрузке рецепта:", error);
         alert("Ошибка при загрузке рецепта! Проверь консоль.");
+    }
+});
+
+document.querySelector(".addRec").addEventListener("click", async function () {
+    let tg = window.Telegram.WebApp;
+    let userId = tg.initDataUnsafe.user.id; 
+    const recipeId = this.getAttribute("data-recipe-id");
+
+    try {
+        const response = await fetch('/api/favorites/add', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, recipe_id: recipeId })
+        });
+
+        const result = await response.json();
+        alert(result.message);
+    } catch (error) {
+        console.error("Ошибка при добавлении в избранное:", error);
+    }
+});
+
+document.querySelector(".getRecFav").addEventListener("click", async function () {
+    let tg = window.Telegram.WebApp;
+    let userId = tg.initDataUnsafe.user.id; 
+
+    var addRecButton = document.querySelector('.addRec');
+    addRecButton.style.display = 'block'; 
+    var addRecTable = document.querySelector('.recTable');
+    addRecTable.style.display = 'block'; 
+
+    try {
+        const response = await fetch(`/api/favorites/random?user_id=${userId}`);
+        const result = await response.json();
+
+        if (!result.success) {
+            alert("Нет избранных рецептов!");
+            return;
+        }
+
+        const meal = result.recipe.meals[0];
+        document.querySelector(".recImage").src = meal.strMealThumb;
+        document.querySelector(".recName").textContent = meal.strMeal;
+        document.querySelector(".recCategory").textContent = meal.strCategory;
+        document.querySelector(".recInstruction").textContent = meal.strInstructions;
+        const tableBody = document.querySelector(".recTableBody");
+        tableBody.innerHTML = "";
+
+        for (let i = 1; i <= 20; i++) {
+            const ingredient = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
+
+            if (ingredient && ingredient.trim() !== "") {
+                const row = document.createElement("tr");
+                row.innerHTML = `<td>${ingredient}</td><td>${measure}</td>`;
+                tableBody.appendChild(row);
+            }
+        }
+    } catch (error) {
+        console.error("Ошибка при получении избранного рецепта:", error);
     }
 });
