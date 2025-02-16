@@ -12,10 +12,10 @@ dp = Dispatcher()
 @dp.message(Command('start'))
 async def start(message: types.message):
     kb = [
-        [types.KeyboardButton(text='Открыть', web_app=WebAppInfo(url='https://127.0.0.1:8080/'))]
+        [types.KeyboardButton(text='Открыть приложение', web_app=WebAppInfo(url='https://127.0.0.1:8080/'))]
     ]
     markup = types.ReplyKeyboardMarkup(keyboard=kb)
-    await message.answer('Привет', reply_markup=markup)
+    await message.answer(f'Привет, {message.from_user.first_name}! Это приложение случайных рецепт, для продолжения нажми кнопку "Открыть приложение"', reply_markup=markup)
 
 async def main():
     await dp.start_polling(bot)
