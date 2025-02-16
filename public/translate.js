@@ -3,7 +3,7 @@ export async function translate(text) {
   const options = {
     method: 'POST',
     headers: {
-      'x-rapidapi-key': 'c083d89f6dmsh00789b783d7213fp15d6c3jsnabb98d1061b1',
+      'x-rapidapi-key': 'ddd74eaddfmsh283f64f28674197p18bad3jsn5572d18eaa05',
       'x-rapidapi-host': 'translate-plus.p.rapidapi.com',
       'Content-Type': 'application/json'
     },

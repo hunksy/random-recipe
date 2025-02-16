@@ -56,6 +56,9 @@ document.querySelector(".getRec").addEventListener("click", async function () {
 });
 
 document.querySelector(".addRec").addEventListener("click", async function () {
+    var addRecButton = document.querySelector('.addRec');
+    addRecButton.style.display = 'none'; 
+
     let tg = window.Telegram.WebApp;
     let userId = tg.initDataUnsafe.user.id; 
     const recipeId = this.getAttribute("data-recipe-id");
@@ -79,7 +82,7 @@ document.querySelector(".getRecFav").addEventListener("click", async function ()
     let userId = tg.initDataUnsafe.user.id; 
 
     var addRecButton = document.querySelector('.addRec');
-    addRecButton.style.display = 'block'; 
+    addRecButton.style.display = 'none'; 
     var addRecTable = document.querySelector('.recTable');
     addRecTable.style.display = 'block'; 
 
@@ -94,15 +97,17 @@ document.querySelector(".getRecFav").addEventListener("click", async function ()
 
         const meal = result.recipe.meals[0];
         document.querySelector(".recImage").src = meal.strMealThumb;
-        document.querySelector(".recName").textContent = meal.strMeal;
-        document.querySelector(".recCategory").textContent = meal.strCategory;
-        document.querySelector(".recInstruction").textContent = meal.strInstructions;
+        document.querySelector(".recName").textContent = await translate(meal.strMeal);
+        document.querySelector(".recCategory").textContent = await translate(meal.strCategory);
+        document.querySelector(".recInstruction").textContent = await translate(meal.strInstructions);
+        document.querySelector(".addRec").setAttribute("data-recipe-id", meal.idMeal);
+
         const tableBody = document.querySelector(".recTableBody");
         tableBody.innerHTML = "";
 
         for (let i = 1; i <= 20; i++) {
-            const ingredient = meal[`strIngredient${i}`];
-            const measure = meal[`strMeasure${i}`];
+            const ingredient = await translate(meal[`strIngredient${i}`]);
+            const measure = await translate(meal[`strMeasure${i}`]);
 
             if (ingredient && ingredient.trim() !== "") {
                 const row = document.createElement("tr");
