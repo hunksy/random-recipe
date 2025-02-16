@@ -1,3 +1,5 @@
+import {translate} from './translate.js'
+
 document.querySelector(".getRec").addEventListener("click", async function () {
 
     var addRecButton = document.querySelector('.addRec');
@@ -28,16 +30,16 @@ document.querySelector(".getRec").addEventListener("click", async function () {
         const meal = data.meals[0];
 
         document.querySelector(".recImage").src = meal.strMealThumb;
-        document.querySelector(".recName").textContent = meal.strMeal;
-        document.querySelector(".recCategory").textContent = meal.strCategory;
-        document.querySelector(".recInstruction").textContent = meal.strInstructions;
+        document.querySelector(".recName").textContent = await translate(meal.strMeal);
+        document.querySelector(".recCategory").textContent = await translate(meal.strCategory);
+        document.querySelector(".recInstruction").textContent = await translate(meal.strInstructions);
 
         const tableBody = document.querySelector(".recTableBody");
         tableBody.innerHTML = "";
 
         for (let i = 1; i <= 20; i++) {
-            const ingredient = meal[`strIngredient${i}`];
-            const measure = meal[`strMeasure${i}`];
+            const ingredient = await translate(meal[`strIngredient${i}`]);
+            const measure = await translate(meal[`strMeasure${i}`]);
 
             if (ingredient && ingredient.trim() !== "") {
                 const row = document.createElement("tr");
