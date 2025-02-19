@@ -2,9 +2,15 @@ import asyncio
 from aiogram import Bot, Dispatcher, types
 from aiogram.filters.command import Command
 from aiogram.types.web_app_info import WebAppInfo
+import os
+from dotenv import load_dotenv
 
-TOKEN = '7215489064:AAHuMJ75OUpxSRtudQJYInuLZzMDR0p0KYg'
+dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+if os.path.exists(dotenv_path):
+    load_dotenv(dotenv_path)
+
 WEBSITE = 'https://127.0.0.1:8080/'
+TOKEN = os.getenv("TOKEN")
 
 bot = Bot(TOKEN)
 
