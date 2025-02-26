@@ -27,20 +27,23 @@ document.querySelector(".getRec").addEventListener("click", async function () {
             return;
         }
 
+        const favoritesContainer = document.querySelector(".favoritesList");    
+        favoritesContainer.innerHTML = "";
+
         const meal = data.meals[0];
 
         document.querySelector(".recImage").src = meal.strMealThumb;
-        document.querySelector(".recName").textContent = await translate(meal.strMeal);
-        document.querySelector(".recCategory").textContent = await translate(meal.strCategory);
-        document.querySelector(".recInstruction").textContent = await translate(meal.strInstructions);
+        document.querySelector(".recName").textContent = meal.strMeal;
+        document.querySelector(".recCategory").textContent = meal.strCategory;
+        document.querySelector(".recInstruction").textContent = meal.strInstructions;
         document.querySelector(".addRec").setAttribute("data-recipe-id", meal.idMeal);
 
         const tableBody = document.querySelector(".recTableBody");
         tableBody.innerHTML = "";
 
         for (let i = 1; i <= 20; i++) {
-            const ingredient = await translate(meal[`strIngredient${i}`]);
-            const measure = await translate(meal[`strMeasure${i}`]);
+            const ingredient = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
 
             if (ingredient && ingredient.trim() !== "") {
                 const row = document.createElement("tr");
@@ -86,6 +89,9 @@ document.querySelector(".getRecFav").addEventListener("click", async function ()
     var addRecTable = document.querySelector('.recTable');
     addRecTable.style.display = 'block'; 
 
+    const favoritesContainer = document.querySelector(".favoritesList");
+    favoritesContainer.innerHTML = "";
+
     try {
         const response = await fetch(`/api/favorites/random?user_id=${userId}`);
         const result = await response.json();
@@ -97,17 +103,17 @@ document.querySelector(".getRecFav").addEventListener("click", async function ()
 
         const meal = result.recipe.meals[0];
         document.querySelector(".recImage").src = meal.strMealThumb;
-        document.querySelector(".recName").textContent = await translate(meal.strMeal);
-        document.querySelector(".recCategory").textContent = await translate(meal.strCategory);
-        document.querySelector(".recInstruction").textContent = await translate(meal.strInstructions);
+        document.querySelector(".recName").textContent = meal.strMeal;
+        document.querySelector(".recCategory").textContent = meal.strCategory;
+        document.querySelector(".recInstruction").textContent = meal.strInstructions;
         document.querySelector(".addRec").setAttribute("data-recipe-id", meal.idMeal);
 
         const tableBody = document.querySelector(".recTableBody");
         tableBody.innerHTML = "";
 
         for (let i = 1; i <= 20; i++) {
-            const ingredient = await translate(meal[`strIngredient${i}`]);
-            const measure = await translate(meal[`strMeasure${i}`]);
+            const ingredient = meal[`strIngredient${i}`];
+            const measure = meal[`strMeasure${i}`];
 
             if (ingredient && ingredient.trim() !== "") {
                 const row = document.createElement("tr");
@@ -117,5 +123,70 @@ document.querySelector(".getRecFav").addEventListener("click", async function ()
         }
     } catch (error) {
         console.error("Ошибка при получении избранного рецепта:", error);
+    }
+});
+
+async function removeRecipe(userId, recipeId) {
+    try {
+        const response = await fetch('/api/favorites/remove', {
+            method: 'DELETE',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ user_id: userId, recipe_id: recipeId })
+        });
+
+        const result = await response.json();
+        if (result.success) {
+            console.log("Рецепт удален:", recipeId);
+        } else {
+            console.error("Ошибка при удалении рецепта:", result.message);
+        }
+    } catch (error) {
+        console.error("Ошибка при запросе на удаление:", error);
+    }
+}
+
+document.querySelector(".showFavoritesBtn").addEventListener("click", async () => {
+
+    const recipe = document.querySelector(".recipe");    
+    recipe.innerHTML = "";
+
+    try {
+        let tg = window.Telegram.WebApp;
+        let userId = tg.initDataUnsafe.user.id; 
+        const response = await fetch(`/api/favorites/all?user_id=${802026204}`);
+        const result = await response.json();
+
+        const favoritesContainer = document.querySelector(".favoritesList");
+        favoritesContainer.innerHTML = ""; 
+
+        if (!result.success) {
+            favoritesContainer.innerHTML = "<p>Нет избранных рецептов!</p>";
+            return;
+        }
+
+        result.recipes.forEach((meal) => {
+            const mealDiv = document.createElement("div");
+            mealDiv.classList.add("favorite-item");
+        
+            mealDiv.innerHTML = `
+                <img class="recImage" src="${meal.strMealThumb}" alt="Изображение рецепта">
+                <h3 class="recName">${meal.strMeal}</h3>
+                <p class="recCategory">${meal.strCategory}</p>
+                <p class="recInstruction">${meal.strInstructions}</p>
+                <button class="removeRec" data-recipe-id="${meal.idMeal}">Удалить</button>
+            `;
+        
+            console.log("Добавляем рецепт:", mealDiv);
+            favoritesContainer.appendChild(mealDiv);
+            mealDiv.querySelector(".removeRec").addEventListener("click", async (event) => {
+                const recipeId = event.target.dataset.recipeId;
+                await removeRecipe(userId, recipeId);
+                mealDiv.remove();
+            });
+        });
+
+    } catch (error) {
+        console.error("Ошибка при загрузке избранных рецептов:", error);
+        alert("Ошибка при загрузке рецептов! Проверь консоль:", error.message);
     }
 });

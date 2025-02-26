@@ -11,24 +11,29 @@
     <div class="content">
         <button class="getRec">Получить рецепт</button>
         <button class="getRecFav">Получить рецепт из избранного</button>
-        <img class="recImage" src="" alt="">
-        <p class="recName"></p>
-        <p class="recCategory"></p>
-        <p class="recInstruction"></p>
-        <div class="Ingredients">
-            <table class="recTable">
-                <thead>
-                    <tr>
-                        <th>Ингредиент</th>
-                        <th>Количество</th>
-                    </tr>
-                </thead>
-                <tbody class="recTableBody">
-                    
-                </tbody>
-            </table>
+        <button class="showFavoritesBtn">Показать все избранные рецепты</button>
+        <div class="recipe">
+            <img class="recImage" src="" alt="">
+            <p class="recName"></p>
+            <p class="recCategory"></p>
+            <p class="recInstruction"></p>
+            <div class="Ingredients">
+                <table class="recTable">
+                    <thead>
+                        <tr>
+                            <th>Ингредиент</th>
+                            <th>Количество</th>
+                        </tr>
+                    </thead>
+                    <tbody class="recTableBody">
+                        
+                    </tbody>
+                </table>
+            </div>
+            <button class="addRec">Добавить рецепт в избранное</button>
         </div>
-    <button class="addRec">Добавить рецепт в избранное</button>
+        <div class="favoritesList"></div>
+    </div>  
     <script src="https://telegram.org/js/telegram-web-app.js"></script>
     <script src="script.js" type="module"></script>
     </script>
