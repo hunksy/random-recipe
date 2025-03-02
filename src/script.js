@@ -1,4 +1,5 @@
 import {translate} from './translate.js'
+import { getRandomMeal } from './api.js';
 
 document.querySelector(".getRec").addEventListener("click", async function () {
 
@@ -7,19 +8,8 @@ document.querySelector(".getRec").addEventListener("click", async function () {
     var addRecTable = document.querySelector('.recTable');
     addRecTable.style.display = 'block'; 
 
-    const apiUrl = "https://www.themealdb.com/api/json/v1/1/random.php";
-
     try {
-        console.log("Отправка запроса к API...");
-
-        const response = await fetch(apiUrl);
-        console.log("Ответ получен:", response);
-
-        if (!response.ok) {
-            throw new Error(`Ошибка HTTP: ${response.status}`);
-        }
-
-        const data = await response.json();
+        const data = await getRandomMeal();
         console.log("Полученные данные:", data);
 
         if (!data.meals) {
@@ -153,7 +143,7 @@ document.querySelector(".showFavoritesBtn").addEventListener("click", async () =
     try {
         let tg = window.Telegram.WebApp;
         let userId = tg.initDataUnsafe.user.id; 
-        const response = await fetch(`/api/favorites/all?user_id=${802026204}`);
+        const response = await fetch(`/api/favorites/all?user_id=${userId}`);
         const result = await response.json();
 
         const favoritesContainer = document.querySelector(".favoritesList");
@@ -187,6 +177,6 @@ document.querySelector(".showFavoritesBtn").addEventListener("click", async () =
 
     } catch (error) {
         console.error("Ошибка при загрузке избранных рецептов:", error);
-        alert("Ошибка при загрузке рецептов! Проверь консоль:", error.message);
+        alert(`Ошибка при загрузке рецептов! Проверь консоль:`, error.message);
     }
 });

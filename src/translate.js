@@ -1,3 +1,6 @@
+import dotenv from 'dotenv';
+dotenv.config(({path: '../config/.env'}));
+
 export async function translate(text) {
   const url = 'https://translate-plus.p.rapidapi.com/translate';
   const options = {
@@ -17,7 +20,6 @@ export async function translate(text) {
   try {
     const response = await fetch(url, options);
     const result = await response.json();
-    console.log(result['translations']['translation']);
     return result['translations']['translation'];
   } catch (error) {
     console.error(error);

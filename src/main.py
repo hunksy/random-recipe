@@ -5,7 +5,7 @@ from aiogram.types.web_app_info import WebAppInfo
 import os
 from dotenv import load_dotenv
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+dotenv_path = 'config/.env'
 if os.path.exists(dotenv_path):
     load_dotenv(dotenv_path)
 
